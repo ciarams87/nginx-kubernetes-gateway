@@ -17,4 +17,6 @@ type Config struct {
 	PodIP string
 	// UpdateGatewayClassStatus enables updating the status of the GatewayClass resource.
 	UpdateGatewayClassStatus bool
+	// ProxyURL defines a proxy server to connect to Kubernetes API started by "kubectl proxy" command. For testing purposes only.
+	ProxyURL *string
 }

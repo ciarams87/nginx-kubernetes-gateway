@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-const confdFolder = "/etc/nginx/conf.d"
+const confdFolder = "/opt/homebrew/etc/nginx/servers"
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . Manager
 

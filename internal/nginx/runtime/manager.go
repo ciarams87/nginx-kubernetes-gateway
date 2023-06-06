@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const pidFile = "/etc/nginx/nginx.pid"
+const pidFile = "/opt/homebrew/var/run/nginx.pid"
 
 type readFileFunc func(string) ([]byte, error)
 

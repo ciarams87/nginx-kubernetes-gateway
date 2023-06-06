@@ -32,6 +32,9 @@ import (
 	"github.com/nginxinc/nginx-kubernetes-gateway/internal/state/secrets"
 	"github.com/nginxinc/nginx-kubernetes-gateway/internal/state/validation"
 	"github.com/nginxinc/nginx-kubernetes-gateway/internal/status"
+	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
+	"k8s.io/client-go/rest"
 )
 
 const (
@@ -59,8 +62,19 @@ func Start(cfg config.Config) error {
 	}
 
 	eventCh := make(chan interface{})
+	var clusterCfg *rest.Config
+	if *cfg.ProxyURL != "" {
+		clusterCfg, _ = clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+			&clientcmd.ClientConfigLoadingRules{},
+			&clientcmd.ConfigOverrides{
+				ClusterInfo: clientcmdapi.Cluster{
+					Server: *cfg.ProxyURL,
+				},
+			}).ClientConfig()
+	} else {
+		clusterCfg = ctlr.GetConfigOrDie()
 
-	clusterCfg := ctlr.GetConfigOrDie()
+	}
 	clusterCfg.Timeout = clusterTimeout
 
 	mgr, err := manager.New(clusterCfg, options)

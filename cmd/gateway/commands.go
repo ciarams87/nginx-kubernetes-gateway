@@ -118,6 +118,9 @@ func createStaticModeCommand() *cobra.Command {
 	// flag values
 	gateway := namespacedNameValue{}
 	var updateGCStatus bool
+	var proxy *string
+	p := "proxy"
+	proxy = &p
 
 	cmd := &cobra.Command{
 		Use:   "static-mode",
@@ -139,6 +142,10 @@ func createStaticModeCommand() *cobra.Command {
 			if cmd.Flags().Changed(gatewayFlag) {
 				gwNsName = &gateway.value
 			}
+			var proxyURL *string
+			if cmd.Flags().Changed("proxy") {
+				proxyURL = proxy
+			}
 
 			conf := config.Config{
 				GatewayCtlrName:          gatewayCtlrName.value,
@@ -147,6 +154,7 @@ func createStaticModeCommand() *cobra.Command {
 				PodIP:                    podIP,
 				GatewayNsName:            gwNsName,
 				UpdateGatewayClassStatus: updateGCStatus,
+				ProxyURL: proxyURL,
 			}
 
 			if err := manager.Start(conf); err != nil {
@@ -165,6 +173,14 @@ func createStaticModeCommand() *cobra.Command {
 			"If not specified, the control plane will process all Gateways for the configured GatewayClass. "+
 			"However, among them, it will choose the oldest resource by creation timestamp. If the timestamps are "+
 			"equal, it will choose the resource that appears first in alphabetical order by {namespace}/{name}.",
+	)
+
+	cmd.Flags().StringVarP(
+		proxy,
+		"proxy",
+		"p",
+		"",
+		"Proxy URL.",
 	)
 
 	cmd.Flags().BoolVar(
