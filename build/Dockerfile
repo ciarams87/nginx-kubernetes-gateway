@@ -6,7 +6,7 @@ ARG DATE
 
 WORKDIR /go/src/github.com/nginxinc/nginx-kubernetes-gateway/cmd/gateway
 
-COPY go.mod go.sum /go/src/github.com/nginxinc/nginx-kubernetes-gateway
+COPY go.mod go.sum /go/src/github.com/nginxinc/nginx-kubernetes-gateway/
 RUN go mod download
 
 COPY cmd /go/src/github.com/nginxinc/nginx-kubernetes-gateway/cmd
