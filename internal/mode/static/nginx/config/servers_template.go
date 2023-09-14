@@ -1,6 +1,15 @@
 package config
 
+// TODO: Make otel_exporter endpoint configurable by the user
 var serversTemplateText = `
+
+otel_exporter {
+    endpoint 10.244.0.12:4317;
+}
+
+otel_trace on;
+otel_service_name nkg:nginx;
+
 {{- range $s := . -}}
     {{ if $s.IsDefaultSSL -}}
 server {

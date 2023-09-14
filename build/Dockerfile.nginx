@@ -1,10 +1,26 @@
 # syntax=docker/dockerfile:1.4
+
+FROM nginx:1.25.2-alpine AS builder
+
+RUN apk update \
+    && apk add linux-headers openssl-dev pcre2-dev zlib-dev openssl abuild \
+               musl-dev libxslt libxml2-utils make gcc unzip git curl \
+               xz g++ coreutils cmake c-ares-dev re2-dev binutils \
+    && git clone https://github.com/nginx/nginx.git --branch release-1.25.2 \
+    && cd nginx && auto/configure --with-compat && cd -
+
+RUN git clone https://github.com/nginxinc/nginx-otel.git \
+    && cd nginx-otel && mkdir build && cd build \
+    && cmake -DNGX_OTEL_NGINX_BUILD_DIR=${PWD}/../../nginx/objs .. && make && strip ngx_otel_module.so \
+    && mkdir /tmp/packages && cp ngx_otel_module.so /tmp/packages/ngx_otel_module.so
+
 FROM nginx:1.25.2-alpine
 
 ARG NJS_DIR
 ARG NGINX_CONF_DIR
+COPY --from=builder /tmp/packages/ngx_otel_module.so /usr/lib/nginx/modules/ngx_otel_module.so
 
-RUN apk update && apk add --no-cache libcap \
+RUN apk update && apk add --no-cache libcap c-ares re2 \
     && mkdir -p /var/lib/nginx /usr/lib/nginx/modules \
     && setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx \
     && setcap -v 'cap_net_bind_service=+ep' /usr/sbin/nginx \
