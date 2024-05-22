@@ -6,12 +6,14 @@ js_preload_object matches from /etc/nginx/conf.d/matches.json;
     {{ if $s.IsDefaultSSL -}}
 server {
     listen {{ $s.Port }} ssl default_server;
+    listen [::]:{{ $s.Port }} ssl default_server;
 
     ssl_reject_handshake on;
 }
     {{- else if $s.IsDefaultHTTP }}
 server {
     listen {{ $s.Port }} default_server;
+    listen [::]:{{ $s.Port }} default_server;
 
     default_type text/html;
     return 404;
@@ -20,6 +22,8 @@ server {
 server {
         {{- if $s.SSL }}
     listen {{ $s.Port }} ssl;
+    listen [::]:{{ $s.Port }} ssl;
+
     ssl_certificate {{ $s.SSL.Certificate }};
     ssl_certificate_key {{ $s.SSL.CertificateKey }};
 
@@ -28,6 +32,7 @@ server {
     }
         {{- else }}
     listen {{ $s.Port }};
+    listen [::]:{{ $s.Port }};
         {{- end }}
 
     server_name {{ $s.ServerName }};

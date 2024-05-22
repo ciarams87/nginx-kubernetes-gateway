@@ -23,6 +23,7 @@ kind: Service
 metadata:
   name: coffee
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
   - port: 80
     targetPort: 8080
@@ -56,6 +57,7 @@ kind: Service
 metadata:
   name: tea
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
   - port: 80
     targetPort: 8080

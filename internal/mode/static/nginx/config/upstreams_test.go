@@ -35,16 +35,27 @@ func TestExecuteUpstreams(t *testing.T) {
 			Name:      "up3",
 			Endpoints: []resolver.Endpoint{},
 		},
+		{
+			Name: "up4",
+			Endpoints: []resolver.Endpoint{
+				{
+					Address: "2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b",
+					Port:    80,
+				},
+			},
+		},
 	}
 
 	expectedSubStrings := []string{
 		"upstream up1",
 		"upstream up2",
 		"upstream up3",
+		"upstream up4",
 		"upstream invalid-backend-ref",
 		"server 10.0.0.0:80;",
 		"server 11.0.0.0:80;",
 		"server unix:/var/lib/nginx/nginx-502-server.sock;",
+		"server [2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b]:80;",
 	}
 
 	upstreamResults := gen.executeUpstreams(dataplane.Configuration{Upstreams: stateUpstreams})

@@ -151,6 +151,12 @@ create-kind-cluster: ## Create a kind cluster
 	kind create cluster --image $(KIND_IMAGE)
 	kind export kubeconfig --kubeconfig $(KIND_KUBE_CONFIG)
 
+.PHONY: create-kind-cluster
+create-dualstack-kind-cluster: ## Create a dualstack kind cluster
+	$(eval KIND_IMAGE=$(shell grep -m1 'FROM kindest/node' <$(SELF_DIR)tests/Dockerfile | awk -F'[ ]' '{print $$2}'))
+	kind create cluster --image $(KIND_IMAGE) --config $(SELF_DIR)/kind/dualstack-config.yaml
+	kind export kubeconfig --kubeconfig $(KIND_KUBE_CONFIG)
+
 .PHONY: delete-kind-cluster
 delete-kind-cluster: ## Delete kind cluster
 	kind delete cluster

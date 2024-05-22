@@ -16,6 +16,7 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
   {{- end }}
 {{- end }}
+  ipFamilyPolicy: PreferDualStack
   type: {{ .Values.service.type }}
   selector:
     {{- include "nginx-gateway.selectorLabels" . | nindent 4 }}

@@ -1,7 +1,8 @@
 package config
 
 import (
-	"fmt"
+	"net"
+	"strconv"
 	gotemplate "text/template"
 
 	"github.com/nginxinc/nginx-gateway-fabric/internal/framework/helpers"
@@ -69,7 +70,7 @@ func (g GeneratorImpl) createUpstream(up dataplane.Upstream) http.Upstream {
 	upstreamServers := make([]http.UpstreamServer, len(up.Endpoints))
 	for idx, ep := range up.Endpoints {
 		upstreamServers[idx] = http.UpstreamServer{
-			Address: fmt.Sprintf("%s:%d", ep.Address, ep.Port),
+			Address: net.JoinHostPort(ep.Address, strconv.Itoa(int(ep.Port))),
 		}
 	}
 

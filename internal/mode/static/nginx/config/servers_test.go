@@ -204,6 +204,9 @@ func TestExecuteForDefaultServers(t *testing.T) {
 	sslDefaultFmt := "listen %d ssl default_server"
 	httpDefaultFmt := "listen %d default_server"
 
+	sslDefaultIPV6Fmt := "listen [::]:%d ssl default_server"
+	httpDefaultIPV6Fmt := "listen [::]:%d default_server"
+
 	for _, tc := range testcases {
 		t.Run(tc.msg, func(t *testing.T) {
 			g := NewWithT(t)
@@ -220,6 +223,14 @@ func TestExecuteForDefaultServers(t *testing.T) {
 
 			for _, expPort := range tc.sslPorts {
 				g.Expect(serverConf).To(ContainSubstring(fmt.Sprintf(sslDefaultFmt, expPort)))
+			}
+
+			for _, expPort := range tc.httpPorts {
+				g.Expect(serverConf).To(ContainSubstring(fmt.Sprintf(httpDefaultIPV6Fmt, expPort)))
+			}
+
+			for _, expPort := range tc.sslPorts {
+				g.Expect(serverConf).To(ContainSubstring(fmt.Sprintf(sslDefaultIPV6Fmt, expPort)))
 			}
 		})
 	}
